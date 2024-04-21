@@ -28,7 +28,22 @@ class ObtenerPlan(BaseCommand):
         if plan_alimenticio is None or len(plan_alimenticio) == 0:
             logger.error("Plan de alimentacion no encontrado")
             return []
-        else:
-            logger.info("Plan alimentacion encontrado")
-            schema = PlanAlimenticioSchema(many=True)
-            return schema.dump(plan_alimenticio)
+
+        logger.info("Plan alimentacion encontrado")
+        resp = []
+
+        pa: PlanAlimenticio
+        for pa in plan_alimenticio:
+            tmp = {
+                'tipo_plan_alimenticio_id': pa.tipo_plan_alimenticio.id,
+                'tipo_plan_alimenticio_nombre': pa.tipo_plan_alimenticio.nombre,
+                'menu_id': pa.menu.id,
+                'menu_nombre': pa.menu.nombre,
+                'menu_descripcion': pa.menu.descripcion,
+                'menu_calorias': pa.menu.calorias,
+                'menu_porcion': pa.menu.porcion,
+                'menu_medida': pa.menu.medida,
+            }
+            resp.append(tmp)
+
+        return resp
